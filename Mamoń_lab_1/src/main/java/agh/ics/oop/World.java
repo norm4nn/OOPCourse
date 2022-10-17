@@ -1,15 +1,25 @@
 package agh.ics.oop;
-import  agh.ics.oop.Direction;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class World {
     public static void main(String[] args) {
-        System.out.println("system wystartował");
-        List<Direction> directs = stringsToDirects(args);
-        run(directs);
-        System.out.println("system zakończył działanie");
+//        System.out.println("system wystartował");
+//        List<Direction> directs = stringsToDirects(args);
+//        run(directs);
+//        System.out.println("system zakończył działanie");
+
+        Vector2d position1 = new Vector2d(1, 2);
+        System.out.println(position1);
+        Vector2d position2 = new Vector2d(-2, 1);
+        System.out.println(position2);
+        System.out.println(position1.add(position2));
+
+//        System.out.println(MapDirection.EAST.next());
+//        System.out.println(MapDirection.EAST.previous());
+//        System.out.println(MapDirection.EAST);
+//        System.out.println(MapDirection.EAST.toUnitVector());
+
     }
 
     public static void run(List<Direction> directs){

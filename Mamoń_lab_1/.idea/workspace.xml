@@ -5,7 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2aec2acb-4a09-43d4-a58e-36253372d4e7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/md5-checksums.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/sha1-checksums.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/classes/java/main/MapDirectionTest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/classes/java/main/Vector2dTest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/classes/java/main/agh/ics/oop/Direction.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/classes/java/main/agh/ics/oop/MapDirection$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/classes/java/main/agh/ics/oop/MapDirection.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/classes/java/main/agh/ics/oop/MoveDirection.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/classes/java/main/agh/ics/oop/Vector2d.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/classes/java/main/agh/ics/oop/World$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/classes/java/main/agh/ics/oop/World.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/classes/java/main/org/example/Main.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/java/MapDirectionTest.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/agh/ics/oop/MapDirection.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/agh/ics/oop/MoveDirection.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/agh/ics/oop/Vector2d.java" afterDir="false" />

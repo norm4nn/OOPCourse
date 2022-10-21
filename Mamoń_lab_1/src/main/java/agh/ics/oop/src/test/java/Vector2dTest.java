@@ -1,3 +1,5 @@
+package agh.ics.oop.src.test.java;
+
 import agh.ics.oop.Vector2d;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -9,11 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AnimalTest {
     private int testCases;
     private Animal[] animals;
-    private String[][] allArgs;
     private Vector2d[] vectors;
     private MapDirection[] mapDirections;
-
-
 
     @BeforeAll
     private void setup() {
@@ -31,11 +28,11 @@ public class AnimalTest {
 
         OptionsParser optionsParser = new OptionsParser();
         MoveDirection[][] moveDirections = new MoveDirection[testCases][];
-        this.animals = new Animal[testCases];
 
+        this.animals = new Animal[testCases];
         for (int i=0; i < this.testCases; ++i) {
 
-            this.animals[i] = new Animal();
+            this.animals[i] = new Animal(new RectangularMap(5,5), new Vector2d(2, 2));
             moveDirections[i] = optionsParser.parse(allArgs[i]);
 
             for(MoveDirection moveDirection:moveDirections[i]) {
@@ -65,13 +62,13 @@ public class AnimalTest {
 
     @Test
     public void testToString() {
-        assertEquals("[Pozycja: (3,3) | Orientacja: Północ]", this.animals[0].toString());
-        assertEquals("[Pozycja: (1,0) | Orientacja: Wschód]", this.animals[1].toString());
-        assertEquals("[Pozycja: (2,2) | Orientacja: Północ]", this.animals[2].toString());
-        assertEquals("[Pozycja: (2,2) | Orientacja: Południe]", this.animals[3].toString());
-        assertEquals("[Pozycja: (2,2) | Orientacja: Północ]", this.animals[4].toString());
-        assertEquals("[Pozycja: (0,3) | Orientacja: Południe]", this.animals[5].toString());
-        assertEquals("[Pozycja: (4,2) | Orientacja: Zachód]", this.animals[6].toString());
+        assertEquals("^", this.animals[0].toString());
+        assertEquals(">", this.animals[1].toString());
+        assertEquals("^", this.animals[2].toString());
+        assertEquals("V", this.animals[3].toString());
+        assertEquals("^", this.animals[4].toString());
+        assertEquals("V", this.animals[5].toString());
+        assertEquals("<", this.animals[6].toString());
     }
 
     @Test
@@ -80,10 +77,10 @@ public class AnimalTest {
             assertTrue(this.animals[i].isAt(vectors[i]));
 
         for(int i=0; i < this.testCases; ++i)
-            vectors[i] = vectors[i].opposite();
+            vectors[i] = vectors[i].add(new Vector2d(1, 0));
 
         for(int i=0; i < this.testCases; ++i)
-            assertFalse(this.animals[i].isAt(vectors[i]));
+                assertFalse(this.animals[i].isAt(vectors[i]));
     }
 
     @Test

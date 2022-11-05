@@ -1,12 +1,10 @@
 package agh.ics.oop;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-public class RectangularMap implements IWorldMap{
+public class RectangularMap extends AbstractWorldMap{
 
-    ArrayList<Object> objects = new ArrayList<>();
+    final ArrayList<Object> objects = new ArrayList<>();
     final private Vector2d bottomLeft;
     final private Vector2d upperRight;
 
@@ -16,39 +14,19 @@ public class RectangularMap implements IWorldMap{
     }
 
     @Override
-    public String toString() {
-        return new MapVisualizer(this).draw(this.bottomLeft, this.upperRight);
-    }
-
-    private boolean isInScope(Vector2d position) { return position.follows(this.bottomLeft) && position.precedes(this.upperRight); }
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-        return this.isInScope(position) && !(this.isOccupied(position));
+    protected Vector2d getLowerLeft() {
+        return this.bottomLeft;
     }
 
     @Override
-    public boolean place(Animal animal) {
-        if (this.canMoveTo(animal.getPosition())) {
-            this.objects.add(animal);
-            return true;
-        }
-        return false;
+    public Vector2d getUpperRight() {
+        return this.upperRight;
     }
 
     @Override
-    public boolean isOccupied(Vector2d position) {
-        if (!this.isInScope(position)) return true;
-        return  this.objectAt(position) != null;
+    protected boolean isInScope(Vector2d position) {
+        return position.follows(this.bottomLeft) && position.precedes(this.upperRight);
     }
 
-    @Override
-    public Object objectAt(Vector2d position) {
-        if (this.isInScope(position)) {
-            for (Object object: this.objects) {
-                if ( object instanceof Animal && ((Animal) object).isAt(position))   return object;
-            }
-        }
-        return null;
-    }
 
 }

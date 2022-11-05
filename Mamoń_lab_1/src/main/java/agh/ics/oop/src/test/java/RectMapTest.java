@@ -6,10 +6,9 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class WorldMapTest {
+public class RectMapTest {
 
     private IWorldMap[] answerMaps;
-    private int testCases;
 
     @BeforeAll
     void setupAnswers() {
@@ -20,23 +19,27 @@ public class WorldMapTest {
         Animal animal01 = new Animal(this.answerMaps[0], new Vector2d(2, 0));
         animal01.move(MoveDirection.LEFT);
         animal01.move(MoveDirection.LEFT);
-        new Animal(this.answerMaps[0], new Vector2d(3, 4));
+        this.answerMaps[0].place(animal01);
+        this.answerMaps[0].place(new Animal(this.answerMaps[0], new Vector2d(3, 4)));
+
 
 //        TEST - 1
         this.answerMaps[1] = new RectangularMap(1, 1);
         Animal animal11 = new Animal(this.answerMaps[1], new Vector2d(0, 0));
         animal11.move(MoveDirection.LEFT);
         animal11.move(MoveDirection.LEFT);
+        this.answerMaps[1].place(animal11);
 
 //        TEST - 2
         this.answerMaps[2] = new RectangularMap(3, 2);
-        new Animal(this.answerMaps[2], new Vector2d(0, 0));
-        new Animal(this.answerMaps[2], new Vector2d(2, 0));
+        this.answerMaps[2].place(new Animal(this.answerMaps[2], new Vector2d(0, 0)));
+        this.answerMaps[2].place(new Animal(this.answerMaps[2], new Vector2d(2, 0)));
+
 
 //        TEST - 3
         this.answerMaps[3] = new RectangularMap(300, 300);
         for(int i = 0; i < 100; ++i) {
-            new Animal(this.answerMaps[3], new Vector2d(i,299));
+            this.answerMaps[3].place(new Animal(this.answerMaps[3], new Vector2d(i,299)));
         }
     }
 
@@ -73,12 +76,11 @@ public class WorldMapTest {
 
     @Test
     void testMap3() {
-        StringBuilder args = new StringBuilder();
-        args.append("l ".repeat(100));
-        args.append("f ".repeat(100*200));
-        args.append("r ".repeat(100));
-        args.append("f ".repeat(100*300));
-        MoveDirection[] directions = new OptionsParser().parse(args.toString().split(" "));
+        String args = "l ".repeat(100) +
+                "f ".repeat(100 * 200) +
+                "r ".repeat(100) +
+                "f ".repeat(100 * 300);
+        MoveDirection[] directions = new OptionsParser().parse(args.split(" "));
         IWorldMap map = new RectangularMap(300, 300);
         Vector2d[] positions = new Vector2d[100];
         for(int i = 0; i < 100; ++i) {

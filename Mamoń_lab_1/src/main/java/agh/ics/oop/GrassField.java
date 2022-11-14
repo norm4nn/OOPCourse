@@ -3,6 +3,7 @@ package agh.ics.oop;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class GrassField extends AbstractWorldMap{
     final private int grassAmount;
@@ -14,27 +15,34 @@ public class GrassField extends AbstractWorldMap{
                                                  (int)(Math.random() * (Math.sqrt(grassAmount*10) + 1)));
 
             if (!(objectAt(randomVector) instanceof Grass)) {
-                this.mapElements.add(new Grass(randomVector));
+                this.grassHashMap.put(randomVector, new Grass(randomVector));
                 ++i;
             }
         }
     }
     @Override
     protected Vector2d getLowerLeft() {
-        Vector2d lowerLeft = this.mapElements.get(0).getPosition();
 
-        for (AbstractWorldMapElement element:this.mapElements)
-            if (element.getPosition().lowerLeft(lowerLeft).precedes(lowerLeft))
-                lowerLeft = lowerLeft.lowerLeft(element.getPosition());
+        Vector2d lowerLeft = new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
+
+        for (Map.Entry<Vector2d, Animal> entry : this.animalHashMap.entrySet())
+            lowerLeft = lowerLeft.lowerLeft(entry.getKey());
+
+        for (Map.Entry<Vector2d, Grass> entry : this.grassHashMap.entrySet())
+            lowerLeft = lowerLeft.lowerLeft(entry.getKey());
 
         return lowerLeft;
     }
     @Override
     protected Vector2d getUpperRight() {
-        Vector2d upperRight = this.mapElements.get(0).getPosition();
-        for (AbstractWorldMapElement element:this.mapElements)
-            if (element.getPosition().upperRight(upperRight).follows(upperRight))
-                upperRight = upperRight.upperRight(element.getPosition());
+
+        Vector2d upperRight = new Vector2d(0,0);
+
+        for (Map.Entry<Vector2d, Animal> entry : this.animalHashMap.entrySet())
+            upperRight = upperRight.upperRight(entry.getKey());
+
+        for (Map.Entry<Vector2d, Grass> entry : this.grassHashMap.entrySet())
+            upperRight = upperRight.upperRight(entry.getKey());
 
         return upperRight;
     }

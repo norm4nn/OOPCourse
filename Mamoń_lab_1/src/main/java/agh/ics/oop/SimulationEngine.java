@@ -6,10 +6,10 @@ import java.util.LinkedList;
 public class SimulationEngine implements IEngine {
 
     final private MoveDirection[] moves;
-    final private IWorldMap map;
+    final private AbstractWorldMap map;
     final private ArrayList<Animal> animalArrayList;
 
-    public SimulationEngine(MoveDirection[] moves, IWorldMap map, Vector2d[] initialPositions) {
+    public SimulationEngine(MoveDirection[] moves, AbstractWorldMap map, Vector2d[] initialPositions) {
         this.moves = moves;
         this.map = map;
         LinkedList<Animal> animalLinkedList = new LinkedList<>();

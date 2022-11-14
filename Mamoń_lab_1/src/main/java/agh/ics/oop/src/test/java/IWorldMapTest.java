@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class IWorldMapTest {
-    private IWorldMap mapGrass;
-    private IWorldMap mapRect;
+    private AbstractWorldMap mapGrass;
+    private AbstractWorldMap mapRect;
     private Vector2d[] positions;
 
 

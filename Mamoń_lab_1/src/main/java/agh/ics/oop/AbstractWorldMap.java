@@ -1,14 +1,21 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
-abstract class AbstractWorldMap implements IWorldMap{
-    protected ArrayList<AbstractWorldMapElement> mapElements = new ArrayList<>();
+public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
+    protected HashMap<Vector2d, Animal> animalHashMap = new HashMap<>();
+    protected HashMap<Vector2d, Grass> grassHashMap = new HashMap<>();
 
     protected abstract boolean isInScope(Vector2d position);
     protected abstract Vector2d getLowerLeft();
     protected abstract Vector2d getUpperRight();
 
+    @Override
+    public void  positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        Animal animal = this.animalHashMap.get(oldPosition);
+        this.animalHashMap.remove(oldPosition);
+        this.animalHashMap.put(newPosition, animal);
+    }
 
     @Override
     public boolean canMoveTo(Vector2d position) {
@@ -18,7 +25,7 @@ abstract class AbstractWorldMap implements IWorldMap{
     @Override
     public boolean place(Animal animal) {
         if (this.canMoveTo(animal.getPosition())) {
-            this.mapElements.add(animal);
+            this.animalHashMap.put(animal.getPosition(), animal);
             return true;
         }
         return false;
@@ -32,15 +39,9 @@ abstract class AbstractWorldMap implements IWorldMap{
     @Override
     public Object objectAt(Vector2d position) {
 
-        for (AbstractWorldMapElement element : this.mapElements)
-            if (element.isAt(position) && element instanceof Animal)
-                return element;
-
-        for (AbstractWorldMapElement element : this.mapElements)
-            if (element.isAt(position))
-                return element;
-
-        return null;
+        if (this.animalHashMap.get(position) != null)
+            return this.animalHashMap.get(position);
+        return this.grassHashMap.get(position);
     }
 
     public String toString() {

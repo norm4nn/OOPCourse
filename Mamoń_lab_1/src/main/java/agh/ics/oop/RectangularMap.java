@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class RectangularMap extends AbstractWorldMap{
 
-    final ArrayList<Object> objects = new ArrayList<>();
     final private Vector2d bottomLeft;
     final private Vector2d upperRight;
 

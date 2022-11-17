@@ -12,14 +12,14 @@ public class Animal extends AbstractWorldMapElement {
         this.map = map;
         this.position = initialPosition;
         this.positionChangeObservers = new ArrayList<>();
-        this.positionChangeObservers.add(this.map);
+        this.addObserver(this.map);
     }
 
     public Animal() {
         this.position = new Vector2d(2, 2);
         this.map = new RectangularMap(5, 5);
         this.positionChangeObservers = new ArrayList<>();
-        this.positionChangeObservers.add(this.map);
+        this.addObserver(this.map);
     }
 
     public String toString() {

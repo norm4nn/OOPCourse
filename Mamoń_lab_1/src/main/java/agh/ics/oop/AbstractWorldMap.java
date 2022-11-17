@@ -39,7 +39,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     @Override
     public Object objectAt(Vector2d position) {
 
-        if (this.animalHashMap.get(position) != null)
+        if (this.animalHashMap.containsKey(position))
             return this.animalHashMap.get(position);
         return this.grassHashMap.get(position);
     }

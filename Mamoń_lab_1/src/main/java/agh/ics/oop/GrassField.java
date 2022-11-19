@@ -7,44 +7,33 @@ import java.util.Map;
 
 public class GrassField extends AbstractWorldMap{
     final private int grassAmount;
-    public GrassField(int grassAmount) {
-        int i = 0;
-        this.grassAmount = grassAmount;
-        while (i < grassAmount){
-            Vector2d randomVector = new Vector2d((int)(Math.random() * (Math.sqrt(grassAmount*10) + 1)),
-                                                 (int)(Math.random() * (Math.sqrt(grassAmount*10) + 1)));
+    final private   MapBoundary mapBoundary = new MapBoundary();
 
-            if (!(objectAt(randomVector) instanceof Grass)) {
-                this.grassHashMap.put(randomVector, new Grass(randomVector));
-                ++i;
+    private void createGrass() {
+        boolean created = false;
+        while (!created) {
+            Vector2d randomVector = new Vector2d((int) (Math.random() * (Math.sqrt(grassAmount * 10) + 1)),
+                    (int) (Math.random() * (Math.sqrt(grassAmount * 10) + 1)));
+
+            if (this.objectAt(randomVector) == null) {
+                this.mapElements.put(randomVector, new Grass(randomVector));
+                this.mapBoundary.addPosition(randomVector);
+                created = true;
             }
         }
     }
-    @Override
-    protected Vector2d getLowerLeft() {
-
-        Vector2d lowerLeft = new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
-
-        for (Map.Entry<Vector2d, Animal> entry : this.animalHashMap.entrySet())
-            lowerLeft = lowerLeft.lowerLeft(entry.getKey());
-
-        for (Map.Entry<Vector2d, Grass> entry : this.grassHashMap.entrySet())
-            lowerLeft = lowerLeft.lowerLeft(entry.getKey());
-
-        return lowerLeft;
+    public GrassField(int grassAmount) {
+        this.grassAmount = grassAmount;
+        for(int i=0; i < grassAmount; ++i)
+            createGrass();
     }
     @Override
-    protected Vector2d getUpperRight() {
-
-        Vector2d upperRight = new Vector2d(0,0);
-
-        for (Map.Entry<Vector2d, Animal> entry : this.animalHashMap.entrySet())
-            upperRight = upperRight.upperRight(entry.getKey());
-
-        for (Map.Entry<Vector2d, Grass> entry : this.grassHashMap.entrySet())
-            upperRight = upperRight.upperRight(entry.getKey());
-
-        return upperRight;
+    public Vector2d getLowerLeft() {
+        return this.mapBoundary.getLowerLeft();
+    }
+    @Override
+    public Vector2d getUpperRight() {
+        return this.mapBoundary.getUpperRight();
     }
 
     @Override
@@ -52,4 +41,27 @@ public class GrassField extends AbstractWorldMap{
         return position.follows(new Vector2d(0, 0));
     }
 
+    @Override
+    public boolean place(Animal animal) throws IllegalArgumentException {
+        boolean createAfter = this.mapElements.get(animal.getPosition()) instanceof Grass;
+
+        if (super.place(animal)) {
+            this.mapBoundary.addPosition(animal.getPosition());
+            if (createAfter)    createGrass();
+            return true;
+        }
+        return false;
+    }
+
+
+
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        boolean createAfter = this.mapElements.get(newPosition) instanceof Grass;
+        this.mapBoundary.positionChanged(oldPosition, newPosition);
+        super.positionChanged(oldPosition, newPosition);
+
+        if(createAfter)
+            createGrass();
+    }
 }

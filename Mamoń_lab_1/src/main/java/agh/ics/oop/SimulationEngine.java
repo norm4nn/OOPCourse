@@ -9,15 +9,18 @@ public class SimulationEngine implements IEngine {
     final private AbstractWorldMap map;
     final private ArrayList<Animal> animalArrayList;
 
-    public SimulationEngine(MoveDirection[] moves, AbstractWorldMap map, Vector2d[] initialPositions) {
+    public SimulationEngine(MoveDirection[] moves, AbstractWorldMap map, Vector2d[] initialPositions) throws IllegalArgumentException {
         this.moves = moves;
         this.map = map;
         LinkedList<Animal> animalLinkedList = new LinkedList<>();
-        for(Vector2d position:initialPositions)
+        for(Vector2d position:initialPositions){
             if (map.canMoveTo(position)) {
                 animalLinkedList.add(new Animal(this.map, position));
                 this.map.place(animalLinkedList.getLast());
             }
+            else
+                throw new IllegalArgumentException("Couldn't place animal on position " + position + ".");
+        }
 
 
         this.animalArrayList = new ArrayList<>(animalLinkedList);

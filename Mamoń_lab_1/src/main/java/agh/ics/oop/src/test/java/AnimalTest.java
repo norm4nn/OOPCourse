@@ -13,16 +13,16 @@ public class AnimalTest {
     private MapDirection[] mapDirections;
 
     @BeforeAll
-    private void setup() {
+    void setup() {
         this.testCases = 7;
 
-        String[] args_1 = new String[]{"s", "forward","f","f", "b","r", "f", "x", "left"};//(3,3) NORTH
-        String[] args_2 = new String[]{"sas", "b","left","f", "l","forward","f", "xs", "xs", "left"};//(1,0) EAST
-        String[] args_3 = new String[]{"sas", "bas"};//(2,2) NORTH
-        String[] args_4 = new String[]{"sas","left", "r", "r","rabus","right", "bas"};//(2,2) SOUTH
+        String[] args_1 = new String[]{"forward","f","f", "b","r", "f", "left"};//(3,3) NORTH
+        String[] args_2 = new String[]{ "left","f", "l","forward","f", "left"};//(1,0) EAST
+        String[] args_3 = new String[]{"left", "l", "l", "l"};//(2,2) NORTH
+        String[] args_4 = new String[]{"left", "r", "r","right"};//(2,2) SOUTH
         String[] args_5 = new String[]{};//(2,2) NORTH
-        String[] args_6 = new String[]{"lef", "left", "f", "front", "forward", "forward", "f", "f", "right", "right", "b", "r", "backward"};//(0,3) SOUTH
-        String[] args_7 = new String[]{"lef", "left", "backward", "br", "b", "b"};//(4,2) WEST
+        String[] args_6 = new String[]{ "left", "f", "forward", "forward", "f", "f", "right", "right", "b", "r", "backward"};//(0,3) SOUTH
+        String[] args_7 = new String[]{ "left", "backward", "b", "b"};//(4,2) WEST
 
         String[][] allArgs = new String[][]{args_1, args_2, args_3, args_4, args_5, args_6, args_7};
 
@@ -43,7 +43,7 @@ public class AnimalTest {
     }
 
     @BeforeEach
-    private void init() {
+    void init() {
         Vector2d vector2d_1 = new Vector2d(3, 3);
         Vector2d vector2d_2 = new Vector2d(1, 0);
         Vector2d vector2d_3 = new Vector2d(2, 2);
@@ -93,6 +93,27 @@ public class AnimalTest {
 
         for(int i=0; i < this.testCases; ++i)
             assertNotEquals(this.mapDirections[i], this.animals[i].getOrientation());
+    }
+
+    @Test
+    public void testExceptions() {
+        RectangularMap rectangularMap = new RectangularMap(10, 10);
+        Vector2d vector = new Vector2d(2, 2);
+        rectangularMap.place(new Animal(rectangularMap, vector));
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            rectangularMap.place(new Animal(rectangularMap, vector));
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            rectangularMap.place(new Animal(rectangularMap, new Vector2d(0, -1)));
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new OptionsParser().parse("a".split(" "));
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new OptionsParser().parse("f a".split(" "));
+        });
     }
 
 }

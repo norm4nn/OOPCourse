@@ -53,8 +53,12 @@ public class IWorldMapTest {
         }
 
         for (Vector2d position : this.positions) {
-            assertFalse(this.mapGrass.place(new Animal(this.mapGrass, position)));
-            assertFalse(this.mapRect.place(new Animal(this.mapRect, position)));
+            assertThrows(IllegalArgumentException.class, () -> {
+                this.mapGrass.place(new Animal(this.mapGrass, position));
+            });
+            assertThrows(IllegalArgumentException.class, () -> {
+                this.mapRect.place(new Animal(this.mapRect, position));
+            });
         }
     }
 

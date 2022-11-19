@@ -13,7 +13,7 @@ public class RectangularMap extends AbstractWorldMap{
     }
 
     @Override
-    protected Vector2d getLowerLeft() {
+    public Vector2d getLowerLeft() {
         return this.bottomLeft;
     }
 

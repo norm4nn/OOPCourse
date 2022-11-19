@@ -12,7 +12,7 @@ public class OptionsParser {
         return false;
     }
 
-    public MoveDirection[] parse(String[] args) {
+    public MoveDirection[] parse(String[] args) throws IllegalArgumentException{
         int correctAmount = 0;
         int i = 0;
 
@@ -29,15 +29,20 @@ public class OptionsParser {
         i = 0;
 
         for (String arg: args)
-            if (isCorrect(arg)) {
-                switch (arg) {
-                    case "f" -> result[i] = MoveDirection.FORWARD;
-                    case "b" -> result[i] = MoveDirection.BACKWARD;
-                    case "l" -> result[i] = MoveDirection.LEFT;
-                    case "r" -> result[i] = MoveDirection.RIGHT;
+                if (isCorrect(arg)) {
+                    switch (arg) {
+                        case "f" -> result[i] = MoveDirection.FORWARD;
+                        case "b" -> result[i] = MoveDirection.BACKWARD;
+                        case "l" -> result[i] = MoveDirection.LEFT;
+                        case "r" -> result[i] = MoveDirection.RIGHT;
+                    }
+                    i += 1;
                 }
-                i += 1;
-            }
+                else {
+                    throw new IllegalArgumentException(arg + " is not valid argument!!!");
+                }
+
+
 
         return result;
     }

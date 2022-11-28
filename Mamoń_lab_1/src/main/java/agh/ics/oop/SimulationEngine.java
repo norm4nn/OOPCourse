@@ -75,9 +75,9 @@ public class SimulationEngine implements IEngine, Runnable {
         }
     }
 
-    public void setDirection (MoveDirection direction) {
+    public void setDirection (MoveDirection[] direction) {
         this.moves.clear();
-        this.moves.add(direction);
+        Collections.addAll(this.moves, direction);
     }
 
 }

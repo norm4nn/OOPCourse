@@ -9,6 +9,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -19,13 +20,13 @@ import static java.lang.Thread.sleep;
 
 public class App extends Application {
     private Thread engineThread;
+    private SimulationEngine engine;
     private AbstractWorldMap map;
 
     private final GridPane gridPane = new GridPane();
-
-    private final int moveDelay = 300;
-
     private Button startBtn;
+
+    private TextField textField;
 
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
@@ -36,7 +37,11 @@ public class App extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        this.startBtn.setOnAction((event) -> this.engineThread.start());
+        this.startBtn.setOnAction((event) -> {
+            this.engine.setDirection(new OptionsParser().parse(this.textField.getText().split(" ")));
+            this.engineThread = new Thread(engine);
+            this.engineThread.start();
+        });
 
 
     }
@@ -96,7 +101,7 @@ public class App extends Application {
         this.gridPane.add(startLabel, 0, 0, 1, 1);
         GridPane.setHalignment(startLabel, HPos.CENTER);
 
-        HBox hBox = new HBox(this.startBtn);
+        HBox hBox = new HBox(this.startBtn, this.textField);
         hBox.setAlignment(Pos.CENTER);
         this.gridPane.add(hBox, 0, height + 1, width + 1, 1);
         GridPane.setHalignment(hBox, HPos.CENTER);
@@ -117,10 +122,11 @@ public class App extends Application {
         this.map = new GrassField(10);
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
 
-        SimulationEngine engine = new SimulationEngine(directions, this.map, positions, this);
-        this.engineThread = new Thread(engine);
+        this.engine = new SimulationEngine(directions, this.map, positions, this);
+
 
         this.startBtn = new Button("START");
+        this.textField = new TextField();
 
         }
 

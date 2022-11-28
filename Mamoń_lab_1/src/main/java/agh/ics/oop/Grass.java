@@ -9,4 +9,10 @@ public class Grass extends AbstractWorldMapElement{
     public String toString() {
         return "*";
     }
+
+
+    @Override
+    public String imgAddress() {
+        return "src/main/resources/grass.png";
+    }
 }

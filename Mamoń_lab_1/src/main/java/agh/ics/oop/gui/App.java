@@ -1,96 +1,130 @@
 package agh.ics.oop.gui;
 import agh.ics.oop.*;
+import com.sun.tools.jconsole.JConsoleContext;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
-public class App extends Application {
+import static java.lang.Thread.sleep;
 
-    private Vector2d lowerLeft;
-    private Vector2d upperRight;
-    private int width;
-    private int height;
+public class App extends Application {
+    private Thread engineThread;
     private AbstractWorldMap map;
 
+    private final GridPane gridPane = new GridPane();
+
+    private final int moveDelay = 300;
+
+    private Button startBtn;
+
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        GridPane gridPane = new GridPane();
-        gridPane.setGridLinesVisible(true);
+    public void start(Stage primaryStage) throws FileNotFoundException {
+        draw();
 
+        Scene scene = new Scene(this.gridPane, 400, 400);
 
-        ColumnConstraints cc = new ColumnConstraints();
-        cc.setPercentWidth(100d /this.width);
-
-        RowConstraints rc = new RowConstraints();
-        rc.setPercentHeight(100d /this.height);
-
-
-        Label startLabel = new Label("y/x");
-        gridPane.add(startLabel, 0, 0, 1, 1);
-        GridPane.setHalignment(startLabel, HPos.CENTER);
-
-//        gridPane.getColumnConstraints().add(new ColumnConstraints(this.width));
-//        gridPane.getRowConstraints().add(new RowConstraints(this.height));
-
-        gridPane.getColumnConstraints().add(cc);
-        gridPane.getRowConstraints().add(rc);
-
-        for (int x = this.lowerLeft.getX(); x <= this.upperRight.getX(); x++) {
-            Label label2Add = new Label("" + x);
-            gridPane.add(label2Add, x - this.lowerLeft.getX() + 1, 0, 1, 1);
-            GridPane.setHalignment(label2Add, HPos.CENTER);
-//            gridPane.getColumnConstraints().add(new ColumnConstraints(this.width));
-            gridPane.getColumnConstraints().add(cc);
-        }
-
-        for (int y = this.lowerLeft.getY(); y <= this.upperRight.getY(); y++) {
-            Label label2Add = new Label("" + y);
-            gridPane.add(label2Add, 0, this.upperRight.getY() - y + 1, 1, 1);
-            GridPane.setHalignment(label2Add, HPos.CENTER);
-//            gridPane.getRowConstraints().add(new RowConstraints(this.height));
-            gridPane.getRowConstraints().add(rc);
-        }
-
-        for (int x = this.lowerLeft.getX(); x <= this.upperRight.getX(); x++)
-            for (int y = this.lowerLeft.getY(); y <= this.upperRight.getY(); y++) {
-                String value2Add;
-                if (this.map.isOccupied(new Vector2d(x, y)))
-                    value2Add = this.map.objectAt(new Vector2d(x, y)).toString();
-                else
-                    value2Add = " ";
-                Label label2Add = new Label(value2Add);
-                gridPane.add(label2Add,
-                        x - this.lowerLeft.getX() + 1,
-                        this.upperRight.getY() - y + 1, 1, 1);
-                GridPane.setHalignment(label2Add, HPos.CENTER);
-            }
-
-        gridPane.setMinWidth(2000);
-        Scene scene = new Scene(gridPane, 400, 400);
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        this.startBtn.setOnAction((event) -> this.engineThread.start());
+
+
     }
 
+    public void draw()  {
+        this.gridPane.getChildren().clear();
+        this.gridPane.setGridLinesVisible(false);
+        this.gridPane.getColumnConstraints().clear();
+        this.gridPane.getRowConstraints().clear();
+
+        Vector2d lowerLeft = this.map.getLowerLeft();
+        Vector2d upperRight = this.map.getUpperRight();
+        int width = upperRight.getX() - lowerLeft.getX() + 1;
+        int height = upperRight.getY() - lowerLeft.getY() + 1;
+
+
+        this.gridPane.setGridLinesVisible(true);
+
+        ColumnConstraints cc = new ColumnConstraints();
+        cc.setPercentWidth(100d / width);
+
+        RowConstraints rc = new RowConstraints();
+        rc.setPercentHeight(100d /(height + 2));
+
+
+        for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+            Label label2Add = new Label("" + x);
+            this.gridPane.add(label2Add, x - lowerLeft.getX() + 1, 0, 1, 1);
+            GridPane.setHalignment(label2Add, HPos.CENTER);
+            this.gridPane.getColumnConstraints().add(cc);
+        }
+
+        for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
+            Label label2Add = new Label("" + y);
+            this.gridPane.add(label2Add, 0, upperRight.getY() - y + 1, 1, 1);
+            GridPane.setHalignment(label2Add, HPos.CENTER);
+            this.gridPane.getRowConstraints().add(rc);
+        }
+        this.gridPane.getRowConstraints().add(rc);
+
+        for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++)
+            for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++)
+                if (this.map.isOccupied(new Vector2d(x, y))) {
+                    VBox box2Add = null;
+                    try {
+                        box2Add = new GuiElementBox((IMapElement) this.map.objectAt(new Vector2d(x, y))).getvBox();
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                    this.gridPane.add(box2Add,
+                            x - lowerLeft.getX() + 1,
+                            upperRight.getY() - y + 1, 1, 1);
+                    GridPane.setHalignment(box2Add, HPos.CENTER);
+                }
+
+        Label startLabel = new Label("y/x");
+        this.gridPane.add(startLabel, 0, 0, 1, 1);
+        GridPane.setHalignment(startLabel, HPos.CENTER);
+
+        HBox hBox = new HBox(this.startBtn);
+        hBox.setAlignment(Pos.CENTER);
+        this.gridPane.add(hBox, 0, height + 1, width + 1, 1);
+        GridPane.setHalignment(hBox, HPos.CENTER);
+        GridPane.setValignment(hBox, VPos.CENTER);
+
+        this.gridPane.getColumnConstraints().add(cc);
+        this.gridPane.getRowConstraints().add(rc);
+
+        this.gridPane.setMinWidth(2000);
+
+    }
     @Override
     public void init() throws Exception {
         super.init();
         getParameters().getRaw();
+
         MoveDirection[] directions = new OptionsParser().parse("f b r l f f r r f f f f f f f f".split(" "));
         this.map = new GrassField(10);
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
-        IEngine engine = new SimulationEngine(directions, this.map, positions);
-        engine.run();
-        this.lowerLeft = map.getLowerLeft();
-        this.upperRight = map.getUpperRight();
-        this.width = this.upperRight.getX() - this.lowerLeft.getX() + 1;
-        this.height = this.upperRight.getY() - this.lowerLeft.getY() + 1;
-    }
+
+        SimulationEngine engine = new SimulationEngine(directions, this.map, positions, this);
+        this.engineThread = new Thread(engine);
+
+        this.startBtn = new Button("START");
+
+        }
+
+
+
+
 }

@@ -1,39 +1,83 @@
 package agh.ics.oop;
 
+import agh.ics.oop.gui.App;
+import javafx.application.Platform;
+import javafx.scene.control.skin.TextInputControlSkin;
+
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 
-public class SimulationEngine implements IEngine {
+import static java.lang.Thread.sleep;
 
-    final private MoveDirection[] moves;
-    final private AbstractWorldMap map;
-    final private ArrayList<Animal> animalArrayList;
+public class SimulationEngine implements IEngine, Runnable {
 
-    public SimulationEngine(MoveDirection[] moves, AbstractWorldMap map, Vector2d[] initialPositions) throws IllegalArgumentException {
-        this.moves = moves;
-        this.map = map;
+    private ArrayList<MoveDirection> moves = new ArrayList<>();
+    private AbstractWorldMap map;
+    private ArrayList<Animal> animalArrayList;
+
+    private final App app;
+
+
+
+    private void setAnimals(Vector2d[] initialPositions) {
         LinkedList<Animal> animalLinkedList = new LinkedList<>();
-        for(Vector2d position:initialPositions){
+        for (Vector2d position : initialPositions) {
             if (map.canMoveTo(position)) {
                 animalLinkedList.add(new Animal(this.map, position));
                 this.map.place(animalLinkedList.getLast());
-            }
-            else
+            } else
                 throw new IllegalArgumentException("Couldn't place animal on position " + position + ".");
         }
 
-
         this.animalArrayList = new ArrayList<>(animalLinkedList);
+    }
 
+    public SimulationEngine(AbstractWorldMap map, Vector2d[] initialPositions, App app) {
+        this.moves = new ArrayList<>();
+        this.map = map;
+        this.app = app;
+
+        this.setAnimals(initialPositions);
+    }
+
+    public SimulationEngine(MoveDirection[] moves, AbstractWorldMap map, Vector2d[] initialPositions, App app) throws IllegalArgumentException {
+        Collections.addAll(this.moves, moves);
+        this.app = app;
+        this.map = map;
+
+        this.setAnimals(initialPositions);
     }
 
     @Override
     public void run() {
-        for(int i = 0; i < this.moves.length; ++i) {
-//            System.out.println(this.map);
-            this.animalArrayList.get(i % this.animalArrayList.size()).move(moves[i]);
+        if (this.app == null) {
+            for(int i = 0; i < this.moves.size(); ++i)
+//                System.out.println(this.map);
+                this.animalArrayList.get(i % this.animalArrayList.size()).move(this.moves.get(i));
+
+            return;
         }
 
-//        System.out.println(this.map);
+        System.out.println("Thread started.");
+        Platform.runLater(this.app::draw);
+        for(int i = 0; i < this.moves.size(); ++i) {
+            this.animalArrayList.get(i % this.animalArrayList.size()).move(this.moves.get(i));
+            Platform.runLater(this.app::draw);
+            try {
+                int delay = 300;
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
+
+    public void setDirection (MoveDirection direction) {
+        this.moves.clear();
+        this.moves.add(direction);
+    }
+
 }
